@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OR Network Diagram</title>
+
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>OR Network Diagram</h2>
+<button onclick="calculate()">Generate Diagram</button>
+
+<svg width="800" height="400"></svg>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

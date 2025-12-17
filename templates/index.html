@@ -1,130 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>OR Network Diagram</title>
-
-    <!-- D3.js -->
+    <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
-
-    <style>
-        svg {
-            border: 1px solid #ccc;
-        }
-
-        .node {
-            fill: lightblue;
-            stroke: #333;
-            stroke-width: 2px;
-        }
-
-        .critical {
-            fill: #ff4d4d;
-        }
-
-        .link {
-            stroke: #333;
-            stroke-width: 2px;
-            marker-end: url(#arrow);
-        }
-
-        text {
-            font-size: 14px;
-            text-anchor: middle;
-        }
-    </style>
 </head>
 <body>
 
-<h2>OR Network Diagram</h2>
+<h1>OR Network Diagram</h1>
+
+<svg width="800" height="300"></svg>
+<br>
 <button onclick="calculate()">Calculate Network</button>
 
-<svg width="800" height="400"></svg>
-
-<script>
-async function calculate() {
-
-    const activities = [
-        { id: "A", duration: 3, predecessors: [] },
-        { id: "B", duration: 2, predecessors: ["A"] },
-        { id: "C", duration: 4, predecessors: ["A"] },
-        { id: "D", duration: 2, predecessors: ["B", "C"] }
-    ];
-
-    const response = await fetch("/calculate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activities })
-    });
-
-    const data = await response.json();
-    drawDiagram(activities, data.critical_path);
-}
-
-function drawDiagram(activities, criticalPath) {
-
-    const svg = d3.select("svg");
-    svg.selectAll("*").remove();
-
-    // Arrow marker
-    svg.append("defs")
-        .append("marker")
-        .attr("id", "arrow")
-        .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 25)
-        .attr("refY", 0)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
-        .attr("orient", "auto")
-        .append("path")
-        .attr("d", "M0,-5L10,0L0,5")
-        .attr("fill", "#333");
-
-    const nodes = activities.map((a, i) => ({
-        ...a,
-        x: 150 + i * 150,
-        y: 200
-    }));
-
-    const links = [];
-    activities.forEach(a => {
-        a.predecessors.forEach(p => {
-            links.push({
-                source: p,
-                target: a.id
-            });
-        });
-    });
-
-    // Draw links
-    svg.selectAll(".link")
-        .data(links)
-        .enter()
-        .append("line")
-        .attr("class", "link")
-        .attr("x1", d => nodes.find(n => n.id === d.source).x)
-        .attr("y1", d => nodes.find(n => n.id === d.source).y)
-        .attr("x2", d => nodes.find(n => n.id === d.target).x)
-        .attr("y2", d => nodes.find(n => n.id === d.target).y);
-
-    // Draw nodes
-    const g = svg.selectAll(".node-group")
-        .data(nodes)
-        .enter()
-        .append("g")
-        .attr("transform", d => `translate(${d.x},${d.y})`);
-
-    g.append("circle")
-        .attr("r", 25)
-        .attr("class", d =>
-            criticalPath.includes(d.id) ? "node critical" : "node"
-        );
-
-    g.append("text")
-        .attr("dy", 5)
-        .text(d => d.id);
-}
-</script>
-
+<script src="/static/js/main.js"></script>
 </body>
 </html>
